@@ -14,4 +14,8 @@ class Note extends Model
     public function tags() {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function path() {
+        return '/notes/' . $this->id;
+    }
 }
