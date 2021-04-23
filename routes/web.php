@@ -18,4 +18,12 @@ Route::get('/', function () {
 });
 
 Route::post('notes', 'App\Http\Controllers\NotesController@store');
+Route::patch('notes/{note}', 'App\Http\Controllers\NotesController@update');
+Route::delete('notes/{note}', 'App\Http\Controllers\NotesController@delete');
 
+
+Route::post('tags', 'App\Http\Controllers\TagsController@store');
+Route::patch('tags/{tag}', 'App\Http\Controllers\TagsController@update');
+Route::delete('tags/{tag}', 'App\Http\Controllers\TagsController@delete');
+
+Route::get('test', 'App\Http\Controllers\NotesController@test');

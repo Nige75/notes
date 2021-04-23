@@ -13,7 +13,7 @@ class CreateNoteTagsTable extends Migration
      */
     public function up()
     {
-        Schema::create('note_tags', function (Blueprint $table) {
+        Schema::create('note_tag', function (Blueprint $table) {
             $table->integer('note_id')->unsigned();
             $table->integer('tag_id')->unsigned();
             $table->foreign('note_id')
