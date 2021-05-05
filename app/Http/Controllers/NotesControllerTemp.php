@@ -7,6 +7,28 @@ use App\Models\Note;
 
 class NotesController extends Controller
 {
+    public function index() {
+        $data = ["name" => "nige", "email" => "nige@mail.com"];
+
+        return view("home", $data);
+    }
+
+    public function create() {
+        
+    }
+
+    public function read() {
+        
+    }
+    
+    public function edit() {
+        
+    }
+    
+    public function remove() {
+        
+    }    
+
     public function test() {
         $note = Note::find(1);
 

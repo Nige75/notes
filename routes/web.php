@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\NoteController;
+use App\Http\Controllers\TagController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+/*
 Route::get('/', function () {
     return view('welcome');
 });
@@ -27,3 +28,11 @@ Route::patch('tags/{tag}', 'App\Http\Controllers\TagsController@update');
 Route::delete('tags/{tag}', 'App\Http\Controllers\TagsController@delete');
 
 Route::get('test', 'App\Http\Controllers\NotesController@test');
+
+Route::get('notes/create', 'App\Http\Controllers\NotesController@create');
+Route::get('notes/read/{id}', 'App\Http\Controllers\NotesController@read');
+Route::get('notes/edit', 'App\Http\Controllers\NotesController@edit');
+Route::get('notes', 'App\Http\Controllers\NotesController@index');*/
+
+Route::resource('notes', NoteController::class);
+Route::resource('tags', TagController::class);
