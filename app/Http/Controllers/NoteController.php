@@ -7,9 +7,18 @@ use App\Models\Note;
 use App\Models\Tag;
 use App\Models\Attachment;
 use Illuminate\Support\Facades\Storage;
+use App\Services\AttachmentService;
 
 class NoteController extends Controller
 {
+
+    private $attachmentService;
+
+    public function __construct(AttachmentService $service)
+    {
+        $this->attachmentService = $service;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -43,59 +52,12 @@ class NoteController extends Controller
         $note = Note::create($this->validateRequest());
         $note->tags()->sync(request()->input('tags'));
 
-        $note = $this->addFileAttachments($request,$note);
-
-        //ddd($note);
-
-        //$note->attachments()->sync($ids);
-
-        return redirect('/notes')->with('completed', 'Note has been created');
-    }
-
-    protected function addFileAttachments(Request $request, Note $note) {
-        
         if($request->hasfile('filenames'))
         {
-
-            foreach($request->file('filenames') as $file)
-            {
-
-                $name = time().rand(1,100).'.'.$file->extension();
-                $realName = $file->getClientOriginalName();
-
-                $path = Storage::putFileAs('files',$file,$name);
-
-                $attachment = new Attachment();
-                $attachment->location = $name;
-                $attachment->name = $realName;
-        
-                $note->attachments()->save($attachment);
-
-            }
-
+            $note = $this->attachmentService->addFileAttachments($request->file('filenames'),$note);
         }
 
-         return $note;
-    }
-
-    protected function removeFileAttachments($ids) {
-
-        if(!empty($ids)){
-            foreach ($ids as $id) {
-
-                // remove files
-                $attachment = Attachment::findOrFail($id);
-                $fileName = storage_path('app/files/' . $attachment->location);
-
-                unlink($fileName);
-                //Storage::delete($fileName);
-
-                // remove from db
-                $attachment->delete();
-
-            }
-        }
-        return;
+        return redirect('/notes')->with('completed', 'Note has been created');
     }
 
     /**
@@ -140,12 +102,12 @@ class NoteController extends Controller
 
         $note->tags()->sync($request->input('tags'));
 
-        //$note->attachments()->detach($request->input('removeAttachments'));
-        $this->removeFileAttachments($request->input('removeAttachments'));
+        $this->attachmentService->removeFileAttachments($request->input('removeAttachments'));
 
-
-        $note = $this->addFileAttachments($request, $note);
-        //$note->attachments()->attach($ids);
+        if($request->hasfile('filenames'))
+        {
+            $note = $this->attachmentService->addFileAttachments($request->file('filenames'),$note);
+        }
 
         return redirect('/notes')->with('completed', 'Note has been updated');
     }
@@ -161,7 +123,7 @@ class NoteController extends Controller
     {
         $note = Note::findOrFail($id);
 
-        $this->removeFileAttachments($note->attachments()->get()->pluck('id'));
+        $this->attachmentService->removeFileAttachments($note->attachments()->get()->pluck('id'));
 
         $note->delete();
 
