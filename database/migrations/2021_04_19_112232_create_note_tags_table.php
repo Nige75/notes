@@ -35,6 +35,6 @@ class CreateNoteTagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('note_tags');
+        Schema::dropIfExists('note_tag');
     }
 }

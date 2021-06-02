@@ -52,7 +52,7 @@ class TagsActionsTest extends TestCase
  
          $this->assertEquals('new tag', Tag::first()->name);   
  
-         $response->assertRedirect($tag->fresh()->path());
+         $response->assertRedirect('/tags');
      
      }
  

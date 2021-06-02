@@ -1,0 +1,18 @@
+
+    .container {
+        max-width: 450px;
+      }
+      .push-top {
+        margin-top: 50px;
+      }
+      .push-bottom {
+          padding-bottom: 5px;
+      }
+      .hide {
+        display: none;
+      }
+      ul.no-bullets {
+          list-style-type: none; /* Remove bullets */
+          padding: 0; /* Remove padding */
+          margin: 0; /* Remove margins */
+      }

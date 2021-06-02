@@ -2,23 +2,6 @@
 
 @section('content')
 
-<style>
-    .container {
-      max-width: 450px;
-    }
-    .push-top {
-      margin-top: 50px;
-    }
-    .push-bottom {
-        padding-bottom: 5px;
-    }
-    ul.no-bullets {
-        list-style-type: none; /* Remove bullets */
-        padding: 0; /* Remove padding */
-        margin: 0; /* Remove margins */
-    }
-</style>
-
 <div class="push-top push-bottom"><a href="{{ route('notes.index')}}" class="btn btn-primary btn-sm"">Back</a></div>
 <div class="card">
   <div class="card-header">
@@ -45,7 +28,7 @@
               <textarea class="form-control" name="note">{{ $note->note }}</textarea>
           </div>
           <div class="form-group">
-            <label for="tags">Name</label>
+            <label for="tags">Tags</label>
             <ul class="no-bullets">
           @foreach ($note->tags as $tag)
           <li>
@@ -54,7 +37,18 @@
           @endforeach
             </ul>
           </div>
-        </div>
+          <div class="form-group">
+              <label for="tags">Attachments</label>
+              <ul class="no-bullets">
+            @foreach ($note->attachments as $attachment)
+            <li>
+              {{ $attachment->name }} <a href="{{ route('notes.download', $attachment->id)}}" class="btn btn-primary btn-sm"">Download</a>
+            </li>
+            @endforeach
+              </ul>
+          </div>
+
+      </div>
   </div>
 </div>
 @endsection

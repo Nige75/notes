@@ -9,11 +9,16 @@ class Note extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','note'];
+    protected $fillable = ['name','note','file'];
 
     public function tags() {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function attachments() {
+        return $this->hasMany(Attachment::class);
+    }
+
 
     public function path() {
         return '/notes/' . $this->id;

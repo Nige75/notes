@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Tag;
 
 class TagController extends Controller
 {
@@ -13,7 +14,8 @@ class TagController extends Controller
      */
     public function index()
     {
-        //
+        $tags = Tag::all();
+        return view('tag.index',compact('tags'));
     }
 
     /**
@@ -23,7 +25,8 @@ class TagController extends Controller
      */
     public function create()
     {
-        //
+        $tags = Tag::all();
+        return view('tag.create',compact('tags'));
     }
 
     /**
@@ -34,7 +37,8 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Tag::create($this->validateRequest());
+        return redirect('/tags')->with('completed', 'Tag has been created');
     }
 
     /**
@@ -45,7 +49,8 @@ class TagController extends Controller
      */
     public function show($id)
     {
-        //
+        $tag = Tag::findOrFail($id);
+        return view('tag.show', compact('tag'));
     }
 
     /**
@@ -56,7 +61,9 @@ class TagController extends Controller
      */
     public function edit($id)
     {
-        //
+        $tag = Tag::findOrFail($id);
+
+        return view('tag.edit', compact('tag'));
     }
 
     /**
@@ -68,8 +75,12 @@ class TagController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $tag = Tag::findOrFail($id);
+        $tag->update($this->validateRequest());
+
+        return redirect('/tags')->with('completed', 'Tag has been updated');
     }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -79,6 +90,15 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $tag = Tag::findOrFail($id);
+        $tag->delete();
+
+        return redirect('/tags')->with('completed', 'Tag has been deleted');
+    }
+
+    protected function validateRequest() {
+        return request()->validate([
+                    'name' => 'required'
+                ]);
     }
 }
