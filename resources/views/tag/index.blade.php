@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="push-top push-bottom"><a href="{{ route('notes.create')}}" class="btn btn-primary btn-sm"">Create</a></div>
+<div class="push-top push-bottom"><a href="{{ route('tags.create')}}" class="btn btn-primary btn-sm"">Create</a></div>
 <div>
   @if(session()->get('success'))
     <div class="alert alert-success">
@@ -18,14 +18,14 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($notes as $note)
+        @foreach($tags as $tag)
         <tr>
-            <td>{{$note->id}}</td>
-            <td>{{$note->name}}</td>
+            <td>{{$tag->id}}</td>
+            <td>{{$tag->name}}</td>
             <td class="text-center">
-                <a href="{{ route('notes.edit', $note->id)}}" class="btn btn-primary btn-sm"">Edit</a>
-                <a href="{{ route('notes.show', $note->id)}}" class="btn btn-primary btn-sm"">View</a>
-                <form action="{{ route('notes.destroy', $note->id)}}" method="post" style="display: inline-block">
+                <a href="{{ route('tags.edit', $tag->id)}}" class="btn btn-primary btn-sm"">Edit</a>
+                <a href="{{ route('tags.show', $tag->id)}}" class="btn btn-primary btn-sm"">View</a>
+                <form action="{{ route('tags.destroy', $tag->id)}}" method="post" style="display: inline-block">
                     @csrf
                     @method('DELETE')
                     <button class="btn btn-danger btn-sm"" type="submit">Delete</button>

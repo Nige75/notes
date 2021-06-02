@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Note;
 use App\Models\Tag;
+use App\Models\Attachment;
+use Illuminate\Support\Facades\Storage;
 
 class NoteController extends Controller
 {
@@ -39,16 +41,61 @@ class NoteController extends Controller
     public function store(Request $request)
     {
         $note = Note::create($this->validateRequest());
+        $note->tags()->sync(request()->input('tags'));
 
-        try {
-            $note->tags()->sync(request()->input('tags'));
-        }
-        catch (\Exception $e) {
-            $note->delete();
-            return redirect('/notes')->withErrors(['tags' => 'Error attaching tags, please try again.'])->withInput(); 
-        }
+        $note = $this->addFileAttachments($request,$note);
+
+        //ddd($note);
+
+        //$note->attachments()->sync($ids);
 
         return redirect('/notes')->with('completed', 'Note has been created');
+    }
+
+    protected function addFileAttachments(Request $request, Note $note) {
+        
+        if($request->hasfile('filenames'))
+        {
+
+            foreach($request->file('filenames') as $file)
+            {
+
+                $name = time().rand(1,100).'.'.$file->extension();
+                $realName = $file->getClientOriginalName();
+
+                $path = Storage::putFileAs('files',$file,$name);
+
+                $attachment = new Attachment();
+                $attachment->location = $name;
+                $attachment->name = $realName;
+        
+                $note->attachments()->save($attachment);
+
+            }
+
+        }
+
+         return $note;
+    }
+
+    protected function removeFileAttachments($ids) {
+
+        if(!empty($ids)){
+            foreach ($ids as $id) {
+
+                // remove files
+                $attachment = Attachment::findOrFail($id);
+                $fileName = storage_path('app/files/' . $attachment->location);
+
+                unlink($fileName);
+                //Storage::delete($fileName);
+
+                // remove from db
+                $attachment->delete();
+
+            }
+        }
+        return;
     }
 
     /**
@@ -91,12 +138,15 @@ class NoteController extends Controller
         $note = Note::findOrFail($id);
         $note->update($this->validateRequest());
 
-        try {
-            $note->tags()->sync(request()->input('tags'));
-        }
-        catch (\Exception $e) {
-            return redirect('/notes')->withErrors(['tags' => 'Error attaching tags, please try again.'])->withInput(); 
-        }
+        $note->tags()->sync($request->input('tags'));
+
+        //$note->attachments()->detach($request->input('removeAttachments'));
+        $this->removeFileAttachments($request->input('removeAttachments'));
+
+
+        $note = $this->addFileAttachments($request, $note);
+        //$note->attachments()->attach($ids);
+
         return redirect('/notes')->with('completed', 'Note has been updated');
     }
     
@@ -110,15 +160,37 @@ class NoteController extends Controller
     public function destroy($id)
     {
         $note = Note::findOrFail($id);
+
+        $this->removeFileAttachments($note->attachments()->get()->pluck('id'));
+
         $note->delete();
 
         return redirect('/notes')->with('completed', 'Note has been deleted');
     }
 
+     /**
+     * Download attachment in browser
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function download($id)
+    {
+        $attachment = Attachment::findOrFail($id);
+
+        $fileName = storage_path('app/files/' . $attachment->location);
+
+        header('Content-Type: application/octet-stream');
+        header("Content-Transfer-Encoding: Binary"); 
+        header("Content-disposition: attachment; filename=\"".$attachment->name."\""); 
+        readfile($fileName);
+        exit;
+
+    }
+
     protected function validateRequest() {
         return request()->validate([
                     'name' => 'required',
-                    'note' => ''
+                    'note' => '',
                 ]);
     }
 }

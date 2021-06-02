@@ -2,17 +2,6 @@
 
 @section('content')
 
-<style>
-    .container {
-      max-width: 450px;
-    }
-    .push-top {
-      margin-top: 50px;
-    }
-    .push-bottom {
-      padding-bottom: 5px;
-    }
-</style>
 
 <div class="push-top push-bottom"><a href="{{ route('notes.index')}}" class="btn btn-primary btn-sm"">Back</a></div>
 <div class="card">
@@ -29,7 +18,7 @@
         </ul>
       </div><br />
     @endif
-      <form method="post" action="{{ route('notes.store') }}">
+      <form method="post" action="{{ route('notes.store') }}" enctype="multipart/form-data">
           <div class="form-group">
               @csrf
               <label for="name">Name</label>
@@ -46,8 +35,36 @@
           </div>
           @endforeach
 
+
+          <div class="input-group hdtuto control-group lst increment push-bottom " >
+      
+            <div class="input-group-btn"> 
+      
+              <button class="btn btn-success add-file-ui" type="button"><i class="fldemo glyphicon glyphicon-plus"></i>Add File</button>
+      
+            </div>
+      
+          </div>
+      
+          <div class="clone hide">
+      
+            <div class="hdtuto control-group lst input-group" style="margin-top:10px">
+      
+              <input type="file" name="filenames[]" class="myfrm form-control">
+      
+              <div class="input-group-btn"> 
+      
+                <button class="btn btn-danger remove-file-ui" type="button"><i class="fldemo glyphicon glyphicon-remove"></i> Remove</button>
+      
+              </div>
+      
+            </div>
+      
+          </div>
+
           <button type="submit" class="btn btn-block btn-danger">Create Note</button>
       </form>
+
   </div>
 </div>
 @endsection

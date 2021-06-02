@@ -36,3 +36,4 @@ Route::get('notes', 'App\Http\Controllers\NotesController@index');*/
 
 Route::resource('notes', NoteController::class);
 Route::resource('tags', TagController::class);
+Route::get('notes/download/{id}', 'App\Http\Controllers\NoteController@download')->name('notes.download');
