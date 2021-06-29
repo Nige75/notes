@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NotesApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->prefix('v1')->group(function(){
+    Route::get('/user', function(Request $request){
+        return $request->user();
+    });
+
+    //Route::resource('tags', TagController::class);
+
+    //Route::get('/notesapi/{note}', 'App\Http\Controllers\NotesApiController@show')->name('notesapi.show');
+
+    Route::apiResource('notes', NotesApiController::class);
 });
